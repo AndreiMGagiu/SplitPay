@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_24_073147) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_24_084354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "disbursements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "merchant_id", null: false
+    t.string "reference", null: false
+    t.date "disbursed_on", null: false
+    t.decimal "total_amount", precision: 10, scale: 2, null: false
+    t.decimal "total_fees", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["merchant_id"], name: "index_disbursements_on_merchant_id"
+    t.index ["reference"], name: "index_disbursements_on_reference", unique: true
+  end
 
   create_table "merchants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "reference", null: false
@@ -24,4 +36,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_24_073147) do
     t.datetime "updated_at", null: false
     t.index ["reference"], name: "index_merchants_on_reference", unique: true
   end
+
+  create_table "monthly_fees", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "merchant_id", null: false
+    t.date "month", null: false
+    t.decimal "total_commissions", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "fee_charged", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["merchant_id", "month"], name: "index_monthly_fees_on_merchant_id_and_month", unique: true
+    t.index ["merchant_id"], name: "index_monthly_fees_on_merchant_id"
+  end
+
+  create_table "orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "merchant_id", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.decimal "commission_fee", precision: 10, scale: 2
+    t.uuid "disbursement_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["disbursement_id"], name: "index_orders_on_disbursement_id"
+    t.index ["merchant_id"], name: "index_orders_on_merchant_id"
+  end
+
+  add_foreign_key "disbursements", "merchants"
+  add_foreign_key "monthly_fees", "merchants"
+  add_foreign_key "orders", "merchants"
 end
