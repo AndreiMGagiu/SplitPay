@@ -42,6 +42,9 @@ gem 'thruster', require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+# Background jobs
+gem 'sidekiq', '~> 7.2'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
@@ -70,4 +73,5 @@ group :test do
   gem 'faker', '~> 3.3'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 6.2'
+  gem "rspec-sidekiq", "~> 5.0"
 end
