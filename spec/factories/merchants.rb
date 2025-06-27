@@ -7,5 +7,6 @@ FactoryBot.define do
     live_on                 { Faker::Date.between(from: 3.years.ago, to: Time.zone.today) }
     disbursement_frequency  { Merchant.disbursement_frequencies.keys.sample }
     minimum_monthly_fee     { [0.0, 10.0, 29.0, 35.0].sample }
+    source_id               { SecureRandom.hex(8) }
   end
 end

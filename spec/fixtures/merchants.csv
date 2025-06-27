@@ -1,6 +1,6 @@
 id;reference;email;live_on;disbursement_frequency;minimum_monthly_fee
 123;valid_shop;valid@example.com;2023-01-01;daily;10.0
-124;invalid_date_shop;bad-date@example.com;invalid-date;daily;10.0
+124;invalid_date_shop;bad-date@example.com;2023-13-01;daily;10.0
 125;invalid_decimal_shop;bad-decimal@example.com;2023-01-01;daily;ten
 126;missing_column_shop;missing@example.com;;;
 127;;invalid@example.com;2023-01-01;daily;10.0
