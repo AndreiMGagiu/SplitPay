@@ -6,3 +6,19 @@
   - orders_batch
   - merchants_import
   - orders_import
+  - process_disbursement
+  - monthly_fee
+  - commision_fees
+
+:schedule:
+  commission_fees:
+    cron: "0 3 * * *"
+    class: "CommissionCalculatorJob"
+
+  daily_disbursement:
+    cron: "0 7 * * *"
+    class: "DailyDisbursementJob"
+
+  monthly_fees:
+    cron: "0 4 1 * *"
+    class: "CalculateMonthlyFeeJob"
