@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_26_133953) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_28_052714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,6 +59,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_133953) do
     t.datetime "updated_at", null: false
     t.string "source_id", null: false
     t.index ["disbursement_id"], name: "index_orders_on_disbursement_id"
+    t.index ["merchant_id", "disbursement_id", "commission_fee", "created_at"], name: "index_orders_on_merchant_disbursement_fee_created_at"
     t.index ["merchant_id"], name: "index_orders_on_merchant_id"
     t.index ["source_id"], name: "index_orders_on_source_id", unique: true
   end
