@@ -5,7 +5,10 @@ A Ruby on Rails application to import merchant and orders data, calculate commis
 ---
 
 ## Table of Contents
-
+- [Ruby Version](#ruby-version)
+- [Rails Version](#rails-version)
+- [System Dependencies](#system-dependencies)
+- [Database Design](#database-design)
 - [Setup](#setup)
 - [Execution](#execution)
 - [Disbursement Report](#disbursement-report)
@@ -13,6 +16,57 @@ A Ruby on Rails application to import merchant and orders data, calculate commis
 - [Assumptions](#assumptions)
 
 ---
+
+## Ruby version
+```
+ruby-3.3.6
+```
+## Rails version
+```bash
+Rails 8.0.2
+```
+
+## System Dependencies
+- PostgreSQL
+- Redis (for Sidekiq)
+- Sidekiq (background jobs)
+
+## Database design
+
+### Schema
+This application consists of four primary entities:
+
+- `Merchant`: Represents a seller using the platform. Each merchant has a disbursement frequency (daily or weekly), a unique reference ID, and a minimum monthly fee requirement.
+
+- `Order`: Represents a purchase made using the platform. It belongs to a merchant and may optionally be associated with a disbursement.
+
+- `Disbursement`: Represents a payout to a merchant for a group of eligible orders on a given day. It includes total amounts and total fees.
+
+- `MonthlyFee`: Captures a monthly fee charged to a merchant if their total commission for the previous month falls below the configured minimum.
+  
+### Schema Relationships
+
+- A `Merchant` has many `Orders`, `Disbursements`, and `MonthlyFees`.
+
+- An `Order` belongs to a `Merchant`, and optionally to a `Disbursement`.
+
+- A `Disbursement` belongs to a `Merchant` and has many `Orders`.
+
+- A `MonthlyFee` belongs to a `Merchant`.
+
+### Indexes and Constraints
+| Table           | Field(s)                                              | Reason                                                             |
+| --------------- | ----------------------------------------------------- | ------------------------------------------------------------------ |
+| `merchants`     | `reference (UNIQUE)`                                  | Prevents duplicate merchant records                                |
+| `merchants`     | `source_id (UNIQUE)`                                  | Ensures idempotent CSV import and natural key tracking             |
+| `orders`        | `source_id (UNIQUE)`                                  | Guarantees each order from CSV is imported only once               |
+| `orders`        | `merchant_id`                                         | Foreign key for querying orders by merchant                        |
+| `orders`        | `disbursement_id`                                     | Allows grouping of orders by disbursement                          |
+| `orders`        | Composite: `merchant_id, disbursement_id, created_at` | Optimizes scoped lookups for processing disbursements              |
+| `disbursements` | `merchant_id`                                         | Enables merchant-specific payout summaries                         |
+| `disbursements` | `reference (UNIQUE)`                                  | Ensures every disbursement has a unique external-facing identifier |
+| `monthly_fees`  | `merchant_id, month (UNIQUE)`                         | Prevents duplicate monthly fee entries for the same merchant+month |
+
 
 ## Setup
 
