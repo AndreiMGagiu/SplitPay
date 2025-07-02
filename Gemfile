@@ -73,7 +73,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
   gem 'factory_bot_rails', '~> 6.4'
-  gem 'faker', '~> 3.3'
+  gem 'faker', '~> 3.5'
   gem 'rspec-sidekiq', '~> 5.0'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 6.2'
