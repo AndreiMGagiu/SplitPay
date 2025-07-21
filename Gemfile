@@ -74,7 +74,7 @@ group :test do
   gem 'capybara'
   gem 'factory_bot_rails', '~> 6.4'
   gem 'faker', '~> 3.3'
-  gem 'rspec-sidekiq', '~> 5.0'
+  gem 'rspec-sidekiq', '~> 5.2'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 6.2'
 end
